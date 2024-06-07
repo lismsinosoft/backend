@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.CurveMapper">
+
+    <select id="queryAllNames" resultType="String">
+        select distinct name
+        from curve
+        where project_id = #{projectId}
+    </select>
+
+    <insert id="transformImport">
+        insert into curve (project_id, product, name, x, y, is_important, create_time)
+        select project_id,
+               product,
+               name,
+               x,
+               y,
+               false,
+               create_time
+        from import_curve
+        where task_id = #{taskId}
+    </insert>
+
+    <insert id="transformImportantImport">
+        insert into curve (project_id, product, name, x, y, is_important, important_label, create_time)
+        select project_id,
+               product,
+               name,
+               x,
+               y,
+               true,
+               label,
+               create_time
+        from import_curve_important
+        where task_id = #{taskId}
+    </insert>
+
+    <update id="truncateCurve">
+        truncate table curve
+    </update>
+</mapper>

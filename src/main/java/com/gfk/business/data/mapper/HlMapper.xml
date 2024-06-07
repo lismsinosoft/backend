@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.HlMapper">
+
+    <insert id="transformImport">
+        insert into hl (project_id, platform, l_group, hl1, l2_group, hl2, create_time)
+        select project_id,
+               platform,
+               l_group,
+               hl1,
+               l2_group,
+               hl2,
+               create_time
+        from import_hl
+        where task_id = #{taskId}
+    </insert>
+
+    <update id="truncateHl">
+        truncate table hl;
+    </update>
+</mapper>

@@ -1,0 +1,124 @@
+package ${package}.service.impl;
+
+import cn.hutool.core.collection.CollectionUtil;
+import ${package}.model.${classEntity};
+import ${package}.service.${ClassName}Service;
+import ${package}.mapper.${ClassName}Mapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.gfk.common.exception.BusinessException;
+import com.gfk.common.util.PojoUtils;
+import com.gfk.common.model.PageRequest;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * ${tableComment} 服务层实现
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ${ClassName}ServiceImpl implements ${ClassName}Service {
+
+    private final ${ClassName}Mapper ${className}Mapper;
+
+
+    /**
+     * 查询${tableComment}列表
+     *
+     * @param form 查询条件
+     * @return ${tableComment}集合
+     */
+    @Override
+    public Page<${classEntity}> pageList(PageRequest<${classEntity}> form) {
+        Page<${classEntity}> page = new Page<>(form.getPageNo(), form.getPageSize());
+        LambdaQueryWrapper<${classEntity}> query = Wrappers.<${classEntity}>lambdaQuery();
+        return ${className}Mapper.selectPage(page, query);
+    }
+
+    /**
+     * 新增${tableComment}对象
+     *
+     * @param entity 待新增对象
+     * @return ${tableComment}对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ${classEntity} add(${classEntity} entity) {
+        ${className}Mapper.insert(entity);
+        return entity;
+    }
+
+    /**
+     * 更新${tableComment}对象
+     *
+     * @param entity 待更新对象
+     * @return ${tableComment}对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ${classEntity} update(${classEntity} entity) {
+        ${classEntity} oldEntity = ${className}Mapper.selectById(entity.getId());
+        if (oldEntity == null) {
+            throw new BusinessException("对象不存在，请检查");
+        }
+        //对象属性复制
+        PojoUtils.copyPropertiesIgnoreNull(entity, oldEntity);
+        ${className}Mapper.updateById(oldEntity);
+        return oldEntity;
+    }
+
+    /**
+     * 删除${tableComment}对象
+     *
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean del(String ids) {
+        ${className}Mapper.deleteBatchIds(CollectionUtil.toList(ids.split(",")));
+        return true;
+    }
+
+#if($importAndExport == true)
+    /**
+     * 导入数据
+     *
+     * @param list
+     * @param updateSupport 是否更新现有数据
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void importData(List<${classEntity}> list, boolean updateSupport) {
+        if (CollectionUtil.isEmpty(list)) {
+            throw new BusinessException("待导入数据为空");
+        }
+        for (${classEntity} entity : list) {
+            ${classEntity} oldEntity = ${className}Mapper.selectById(entity.getId());
+            if (oldEntity != null) {
+                if (Boolean.TRUE.equals(updateSupport)) {
+                    PojoUtils.copyPropertiesIgnoreNull(entity, oldEntity);
+                    ${className}Mapper.updateById(oldEntity);
+                }
+                else {
+                    throw new BusinessException("存在重复数据，请检查。");
+                }
+            }
+            else {
+                entity.setId(IdGenerateHelper.nextId());
+                ${className}Mapper.insert(entity);
+            }
+        }
+    }
+#end
+}

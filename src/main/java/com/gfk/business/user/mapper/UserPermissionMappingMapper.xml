@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.user.mapper.UserPermissionMappingMapper">
+
+    <select id="getUserPermission" resultType="com.gfk.business.user.model.vo.UserPermissionVO">
+        select *
+        from user_permission_mapping pm
+                 inner join permission p on pm.permission_id = p.id
+        where pm.user_id = #{userId}
+    </select>
+
+    <insert id="batchInsert">
+        insert into user_permission_mapping
+        (create_by,update_by,is_deleted,create_time,update_time,user_id,permission_id,sort)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.createBy},#{i.updateBy},#{i.isDeleted},#{i.createTime},#{i.updateTime},#{i.userId},#{i.permissionId},#{i.sort})
+        </foreach>
+    </insert>
+</mapper>

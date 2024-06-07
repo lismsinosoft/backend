@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.T5p3Mapper">
+
+    <insert id="batchInsert">
+        insert into t5p3 (project_id,create_time,update_time,series,type1,type2,act_on,x,y,is_important,label)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.projectId},#{i.createTime},#{i.updateTime},#{i.series},#{i.type1},#{i.type2},#{i.actOn},#{i.x},#{i.y},#{i.isImportant},#{i.label})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket</title>
+</head>
+<body>
+<h1>Websocket Echo</h1>
+<!--<input type="text" id="sendTxt">-->
+<textarea type="text" id="sendTxt" style="height: 200px;width: 500px"></textarea>
+<hr/>
+<button id="sendBtn">发送</button>
+<hr/>
+<div id="recv"></div>
+<script type="text/javascript">
+    var websocket = new WebSocket("ws://xx.xx.xx.xx/api/ws");
+    websocket.onopen = function(){
+        console.log("websocket open");
+    }
+    websocket.connect = function(){
+        document.getElementById("recv").innerHTML = "Connected";
+    }
+    websocket.inclose = function(){
+        console.log('websocket inclose');
+    }
+    websocket.close = function(){
+        console.log('websocket close');
+    }
+    websocket.onmessage = function(e){
+        console.log(e.data);
+        document.getElementById("recv").innerHTML = e.data;
+    }
+    document.getElementById("sendBtn").onclick = function(){
+        var txt = document.getElementById("sendTxt").innerHTML;
+        websocket.send(txt);
+    }
+
+    /**示例请求数据*/
+    sampleData = function(){
+        var massage = {type:null, body: null}, authInfo = {token:null, activityId:null};
+        authInfo.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDExOTIyMDMsInVzZXJJZCI6Ijc4ODg2MzExNDAzNjc5OTg5NzYiLCJ1c2VybmFtZSI6ImFkbWluIn0.IqhuqV87fhN7W-kBbqAMBweHekX09ExL88T3UTMe9go";
+        authInfo.activityId = "7987460517042290688";
+        massage.type = "auth";
+        massage.body = authInfo;
+        var txt = JSON.stringify(massage);
+        document.getElementById("sendTxt").innerHTML = txt;
+    }
+    sampleData();
+
+</script>
+</body>
+</html>

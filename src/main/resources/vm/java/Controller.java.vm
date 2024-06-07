@@ -1,0 +1,135 @@
+package ${package}.controller;
+
+
+import ${package}.model.${classEntity};
+import ${package}.service.${ClassName}Service;
+import com.gfk.common.model.PageRequest;
+import com.gfk.common.model.PageResponse;
+import com.gfk.common.model.Result;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+#if($importAndExport == true)
+import org.springframework.web.multipart.MultipartFile;
+import com.gfk.framework.plugin.excel.ExcelUtil;
+#end
+
+import javax.validation.Valid;
+import java.util.List;
+
+/**
+*   ${tableComment}管理
+ *
+ * @author ${author}
+ * @date ${datetime}
+*/
+@Slf4j
+@Api(tags = "${tableComment}管理")
+@RestController
+@RequestMapping("#if("$!moduleName" != "")/${moduleName}#end/${classname}")
+@RequiredArgsConstructor
+public class ${ClassName}Controller {
+
+    private final ${ClassName}Service ${className}Service;
+
+
+    /**
+     * ${tableComment}列表
+     */
+    @ApiOperation("${tableComment}列表")
+    @ApiOperationSupport(order = 1)
+    @PostMapping("/list")
+    public Result<PageResponse<${classEntity}>> list(@RequestBody PageRequest<${classEntity}> form) {
+        Page<${classEntity}> page = ${className}Service.pageList(form);
+        PageResponse<${classEntity}> pageResponse = PageResponse.ofPage(page);
+        return Result.success(pageResponse);
+    }
+
+    /**
+     * 新增${tableComment}
+     */
+    //@Log(title = "新增${tableComment}", businessType = BusinessType.INSERT)
+    @ApiOperation("新增${tableComment}")
+    @ApiOperationSupport(order = 2, ignoreParameters = {"id","createTime","updateTime","createBy","updateBy"})
+    @PostMapping("/add")
+    public Result<${classEntity}> add(@Valid @RequestBody ${classEntity} entity) {
+        ${classEntity} result = ${className}Service.add(entity);
+        return Result.success(result);
+    }
+
+    /**
+     * 更新${tableComment}
+     */
+    //@Log(title = "更新${tableComment}", businessType = BusinessType.UPDATE)
+    @ApiOperation("更新${tableComment}")
+    @ApiOperationSupport(order = 3, ignoreParameters = {"createTime","updateTime","createBy","updateBy"})
+    @PostMapping("/update")
+    public Result<${classEntity}> update(@Valid @RequestBody ${classEntity} entity) {
+        ${classEntity} result = ${className}Service.update(entity);
+        return Result.success(result);
+    }
+
+    /**
+     * 删除${tableComment}
+     */
+    //@Log(title = "删除${tableComment}", businessType = BusinessType.DELETE)
+    @ApiOperation("删除${tableComment}")
+    @ApiOperationSupport(order = 4)
+    @PostMapping("/delete/{ids}")
+    public Result<String> delete(@PathVariable("ids") String ids) {
+        ${className}Service.del(ids);
+        return Result.success();
+    }
+
+#if($importAndExport == true)
+    /**
+     * ${tableComment}导入模板
+     * @return
+     */
+    @ApiOperation(value = "${tableComment}导入模板")
+    @ApiOperationSupport(order = 5)
+    @GetMapping("/import_template")
+    public SimpleResponseForm<String> importTemplate() {
+        ExcelUtil<${classEntity}> util = new ExcelUtil<>(${classEntity}.class);
+        return success(util.importTemplateExcel( "${tableComment}导入"));
+    }
+
+    /**
+     * ${tableComment}导入
+     * @return
+     */
+    //@Log(title = "${tableComment}导入", businessType = BusinessType.IMPORT)
+    @ApiOperation(value = "${tableComment}导入")
+    @ApiOperationSupport(order = 6)
+    @PostMapping("/import_data")
+    public SimpleResponseForm<String> importData(MultipartFile file, boolean updateSupport) {
+        if (file == null) {
+            return error("请选择文件");
+        }
+        ExcelUtil<${classEntity}> util = new ExcelUtil<>(${classEntity}.class);
+        List<${classEntity}> list = util.importExcel(file);
+        ${className}Service.importData(list, updateSupport);
+        return success();
+    }
+
+    /**
+     * ${tableComment}导出
+     * @param form 分页请求参数
+     * @return 导出文件
+     */
+    //@Log(title = "${tableComment}导出", businessType = BusinessType.EXPORT)
+    @ApiOperation("${tableComment}导出")
+    @ApiOperationSupport(order = 7)
+    @PostMapping("/export")
+    public SimpleResponseForm<String> export(@RequestBody PageRequestForm<${classEntity}> form) {
+        List<${classEntity}> list = ${className}Service.list(form);
+        ExcelUtil<${classEntity}> excelUtil = new ExcelUtil<>(${classEntity}.class);
+        return success(excelUtil.exportExcel(list, "${tableComment}列表"));
+    }
+#end
+}

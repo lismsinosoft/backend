@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.ProjectYearsMapper">
+
+    <insert id="batchInsert">
+        insert into project_years (create_time,update_time,project_id,table_no,year)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.createTime},#{i.updateTime},#{i.projectId},#{i.tableNo},#{i.year})
+        </foreach>
+    </insert>
+
+</mapper>

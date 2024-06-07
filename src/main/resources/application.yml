@@ -1,0 +1,244 @@
+# 端口号
+server:
+  port: 11016
+  # 统一访问前缀
+  servlet:
+    context-path: /
+  # 开启优雅停机，默认是立即停机IMMEDIATE https://www.jianshu.com/p/199e419c025e
+  shutdown: graceful
+app:
+  ##系统描述信息
+  info:
+    ### 系统访问地址
+    host:
+    ### 名称
+    name: 开发平台
+    # 服务器集群中当前运行服务器标识
+    serverCurrentHost: local
+    # 应用程序访问地址（获取图片等资源）
+    appUrl: ${app.info.host}/api/
+    ### 版本
+    version: v0.0.1
+    ### 版本年份
+    copyrightYear: 2023
+    ### 作者
+    author: wzl
+    ### 联系方式
+    contact: example@example.com
+    ### 描述
+    description: 使用前后分离的开发模式
+    ### 接口文档标题
+    apiTitle: 平台_接口文档
+  ##目录配置
+  file:
+    # 基础文件夹路径
+    basePath: /docker/app
+    ### 静态资源访问Url（头像）
+    staticUrl: static/
+    ### 静态资源保存路径（头像）
+    staticDir: static
+    ### 资源文件夹
+    resourceDir: resource
+    ### 上传大小限制（MB）
+    maxUploadFileSize: 5000
+  # 自定义配置
+  # ------------------------------------------------------------------------------------------------------------
+  ## JWT加密密钥
+  jwt:
+    secret: 123456
+
+# 安全配置
+# ------------------------------------------------------------------------------------------------------------
+## XSS
+xss:
+  enabled: true
+  excludes: /mobile/login//*,/sso//*,/activity/activity/add
+  urlPatterns: /mobile//*,/activity/activity//*,/system/user//*
+# 监控配置
+# ------------------------------------------------------------------------------------------------------------
+## 公开内容配置   https://blog.csdn.net/xiaoping0915/article/details/81389093
+management:
+  endpoint:
+    restart:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      jmx:
+        exposure:
+          include: "*"
+    info:
+        enabled: true
+    health:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+config:
+  numberValue: "1"
+  stringValue: "test"
+  booleanValue: true
+secret:
+  username: admin
+  password: admin
+# 系统配置
+# ------------------------------------------------------------------------------------------------------------
+spring:
+  application:
+    name: gfk-mmo-backend
+  #当前配置设定 dev
+  profiles:
+    active: cloud
+
+  ## 编码配置
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    ## 文件上传大小设置
+    multipart:
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+    ## 编码配置
+    encoding:
+      enabled: true
+      force: true
+      charset: UTF-8
+  ## 解决springboot版本升级导致的文件上传异常    https://blog.csdn.net/wujize/article/details/105849931
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  #数据库配置
+  # ------------------------------------------------------------------------------------------------------------
+  datasource:
+    # JDBC 配置
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${properties.spring.datasource.url}
+    username: ${properties.spring.datasource.username}
+    password: ${properties.spring.datasource.password}
+    ##  连接池配置
+    # https://github.com/alibaba/druid
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      max-active: 50
+      min-idle: 1
+      max-wait: 60000
+      ##  打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      ##  MySQL 连接八小时问题
+      validation-query: SELECT 1
+      validation-query-timeout: 60000
+      test-on-borrow: false
+      test-while-idle: true
+      test-on-return: false
+      # 链接保活
+      keep-alive: true
+      min-evictable-idle-time-millis: 30000
+      ## 默认为stat,即开启sql监控。这里加了个wall,表示同时开启sql防火墙
+      filters: stat
+      # 监控配置
+      ## WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+        ## session统计功能
+        session-stat-enable: false
+        ## 缺省sessionStatMaxCount是1000
+        session-stat-max-count: 1000
+        ##  配置principalSessionName，使得druid能够知道当前的session的用户是谁
+        principal-session-name: data.platform
+        ## 如果你的user信息保存在cookie中，你可以配置principalCookieName，使得druid知道当前的user是谁
+        principal-cookie-name: data.platform
+        ## 配置profileEnable能够监控单个url调用的sql列表
+        profile-enable: true
+      # StatViewServlet配置
+      stat-view-servlet:
+        enabled: true
+        # 访问内置监控页面
+        url-pattern: /druid/*
+        # 允许清空统计数据
+        reset-enable: true
+        login-username: ${properties.spring.datasource.druid.stat-view-servlet.login-username}
+        login-password: ${properties.spring.datasource.druid.stat-view-servlet.login-password}
+        # 访问控制
+        allow:
+        deny:
+  # Redis配置
+  # ------------------------------------------------------------------------------------------------------------
+  redis:
+    host: ${properties.spring.redis.host}
+    port: ${properties.spring.redis.port}
+    database: ${properties.spring.redis.database}
+    password: ${properties.spring.redis.password}
+    # 连接超时时间（毫秒）
+    timeout: 30000
+    ## redis连接池配置
+    lettuce:
+      # 连接池最大连接数（使用负值表示没有限制） 默认 8
+      pool.max-active: 8
+      # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+      pool.max-wait: -1
+      # 连接池中的最大空闲连接 默认 8
+      pool.max-idle: 8
+      # 连接池中的最小空闲连接 默认 0
+      pool.min-idle: 0
+
+  ## 缓冲器即最大等待时间
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  #k8s读取配置路径
+  cloud:
+    kubernetes:
+      config:
+        namespace: dev
+        enabled: true
+        name: test-config
+      client:
+        namespace: dev
+      discovery:
+        enabled: true
+        all-namespaces: true
+## mybatis-plus配置
+### 开启驼峰命名转换
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.gfk.business.**.model
+  mapper-locations: classpath:com/gfk/business/**/mapper/*Mapper.xml
+  global-config:
+    db-config:
+      # 逻辑删除
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+knife4j:
+  enable: true
+  basic:
+    enable: true
+    username: gfk-administrator
+    password: Pw4GfK_admin
+
+# 应用配置
+# ------------------------------------------------------------------------------------------------------------
+#email info
+email:
+  smtp:
+  port:
+  useSSL: false
+  useTLS: false
+  useAuth: false
+  account:
+  passw:
+  toMail:
+  debugMail:
+  warningMail:
+unavailable:
+  enable: false
+db-config:
+  sql-log-enable: false
+

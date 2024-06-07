@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.system.data.mapper.CurveImportMapper">
+    <update id="truncateImport">
+        truncate table import_curve
+    </update>
+
+    <update id="truncateImportantImport">
+        truncate table import_curve_important
+    </update>
+
+    <insert id="saveBatch">
+        insert into import_curve (id,task_id,project_id,seq,create_time,product,name,x,y)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.id},#{i.taskId},#{i.projectId},#{i.seq},#{i.createTime},#{i.product},#{i.name},#{i.x},#{i.y})
+        </foreach>
+    </insert>
+
+    <insert id="saveImportantBatch">
+        insert into import_curve_important (id,task_id,project_id,seq,create_time,product,name,label,x,y)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.id},#{i.taskId},#{i.projectId},#{i.seq},#{i.createTime},#{i.product},#{i.name},#{i.label},#{i.x},#{i.y})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.SimT1p3Mapper">
+
+    <insert id="batchInsert">
+        insert into sim_t1p3
+        (id,project_id,create_time,update_time,series,frame1,frame2,type1,spend_current,spend_minimal,spend_optimal,revenue_current,revenue_minimal,revenue_optimal,roi_current,roi_minimal,roi_optimal,status,action,spend_gap_num,spend_gap_pct,roi_gap_num,roi_gap_pct,revenue_gap_num,revenue_gap_pct)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.id},#{i.projectId},#{i.createTime},#{i.updateTime},#{i.series},#{i.frame1},#{i.frame2},#{i.type1},#{i.spendCurrent},#{i.spendMinimal},#{i.spendOptimal},#{i.revenueCurrent},#{i.revenueMinimal},#{i.revenueOptimal},#{i.roiCurrent},#{i.roiMinimal},#{i.roiOptimal},#{i.status},#{i.action},#{i.spendGapNum},#{i.spendGapPct},#{i.roiGapNum},#{i.roiGapPct},#{i.revenueGapNum},#{i.revenueGapPct})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.MediaChannelMapper">
+
+    <select id="selectConsideringData" resultType="com.gfk.business.data.model.bo.ConsideringBO">
+        select platform as name,
+        sum(ifnull(`roi_first_year`, 0)) as roiFirst,
+        sum(ifnull(`roi_last_year`, 0)) as roiLast,
+        sum(ifnull(`driven_first_year`, 0)) as salesFirst,
+        sum(ifnull(`driven_last_year`, 0)) as salesLast,
+        sum(ifnull(`spend_first_year`, 0)) as spendingFirst,
+        sum(ifnull(`spend_last_year`, 0)) as spendingLast
+        from media_channel
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        group by
+        project_id,
+        <if test='null != query.product and !"".equals(query.product)'>
+            product,
+        </if>
+        platform
+    </select>
+
+    <select id="selectInvestmentDetailData" resultType="com.gfk.business.data.model.bo.InvestmentDetailBO">
+        select
+        platform as type2,
+        var_label as effect,
+        line,
+        sum(ifnull(`pie_first_year`, 0)) as salesFirst,
+        sum(ifnull(`pie_last_year`, 0)) as salesLast,
+        sum(ifnull(`driven_first_year`, 0)) as salesUsdFirst,
+        sum(ifnull(`driven_last_year`, 0)) as salesUsdLast
+        from media_channel
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        group by platform, var_label, line
+    </select>
+
+    <select id="selectPerformanceDetail" resultType="com.gfk.business.data.model.bo.PerformanceDetailBO">
+        select
+        l_group as name,
+        var_label as effect,
+        sum(ifnull(`roi_first_year`, 0)) as roi,
+        sum(ifnull(`roi_last_year`, 0)) as roiLast
+        from media_channel
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        group by l_group, var_label
+    </select>
+
+    <select id="selectProductGroup" resultType="com.gfk.business.data.model.bo.ProductGroupBO">
+        select product                             as product,
+               l_group                             as lGroup,
+               sum(ifnull(`spend_first_year`, 0))  as spendingFirst,
+               sum(ifnull(`spend_last_year`, 0))   as spendingLast,
+               sum(ifnull(`driven_first_year`, 0)) as salesContributionFirst,
+               sum(ifnull(`driven_last_year`, 0))  as salesContributionLast
+        from media_channel
+        where project_id = #{query.projectId}
+          and product = #{query.product}
+          and l_group = #{query.group}
+        group by product, l_group
+    </select>
+
+    <select id="selectRoiAnnuallyTotal" resultType="com.gfk.business.data.model.bo.TwoYearsValue">
+        select sum(ifnull(`roi_first_year`, 0)) as firstYear,
+               sum(ifnull(`roi_last_year`, 0))  as lastYear
+        from media_channel
+        where project_id = #{query.projectId}
+          and product = #{query.product}
+          and l_group = #{query.group}
+        group by product, l_group
+    </select>
+
+    <select id="selectProductGroupFilter" resultType="com.gfk.business.data.model.bo.ProductGroupFilterBO">
+        select distinct product as product,
+                        l_group as lGroup
+        from media_channel
+        where project_id = #{projectId}
+    </select>
+
+    <select id="selectAllProducts" resultType="String">
+        select distinct product
+        from media_channel
+        where project_id = #{projectId}
+    </select>
+
+    <insert id="transformImport">
+        insert into media_channel (project_id, platform, l_group, var_label, product, model_name, name, line,
+                                   pie_overall, pie_first_year, pie_last_year, spend_overall, spend_first_year,
+                                   spend_last_year,
+                                   value_usd_overall, value_usd_first_year, value_usd_last_year, driven_overall,
+                                   driven_first_year, driven_last_year, roi_overall, roi_first_year, roi_last_year,
+                                   create_time)
+        select project_id,
+               platform,
+               l_group,
+               var_label,
+               product,
+               model_name,
+               name,
+               line,
+               pie_overall,
+               pie_first_year,
+               pie_last_year,
+               spend_overall,
+               spend_first_year,
+               spend_last_year,
+               value_usd_overall,
+               value_usd_first_year,
+               value_usd_last_year,
+               driven_overall,
+               driven_first_year,
+               driven_last_year,
+               roi_overall,
+               roi_first_year,
+               roi_last_year,
+               create_time
+        from import_media_channel
+        where task_id = #{taskId}
+    </insert>
+
+    <update id="truncateMediaChannel">
+        truncate table media_channel
+    </update>
+
+</mapper>

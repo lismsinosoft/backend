@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.T1p3Mapper">
+
+    <insert id="batchInsert">
+        insert into t1p3 (id,project_id,create_time,update_time,series,overall,year,value,growth)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.id},#{i.projectId},#{i.createTime},#{i.updateTime},#{i.series},#{i.overall},#{i.year},#{i.value},#{i.growth})
+        </foreach>
+    </insert>
+
+</mapper>

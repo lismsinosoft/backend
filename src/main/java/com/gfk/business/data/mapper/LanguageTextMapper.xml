@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.LanguageTextMapper">
+
+    <insert id="batchInsert">
+        insert into language_text (id,project_id,create_time,update_time,text_key,text_value,language)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.id},#{i.projectId},#{i.createTime},#{i.updateTime},#{i.textKey},#{i.textValue},#{i.language})
+        </foreach>
+    </insert>
+
+</mapper>

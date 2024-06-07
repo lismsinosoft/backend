@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.GroupRelationMapper">
+
+    <insert id="extractRelation">
+        insert into group_relation (project_id, platform, l_group, l2_group, create_time)
+        select project_id,
+               platform,
+               l_group,
+               l2_group,
+               now() as create_time
+        from (select distinct project_id,
+                              platform,
+                              l_group,
+                              l2_group
+              from import_hl
+              where task_id = #{taskId}
+              group by project_id,
+                       platform,
+                       l_group,
+                       l2_group) as r
+
+    </insert>
+
+    <update id="truncateGroupRelation">
+        truncate table group_relation
+    </update>
+</mapper>

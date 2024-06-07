@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.SalesDateMapper">
+
+    <select id="selectCurrentYear" resultType="String">
+        select max(year)
+        from sales_date
+    </select>
+
+    <select id="selectChartData" resultType="com.gfk.business.data.model.bo.SalesDateChartBO">
+        select `year`,
+        end_period as date,
+        sum(ifnull(units, 0)) as unit,
+        sum(ifnull(`value`, 0)) as value,
+        sum(ifnull(price, 0)) as price
+        from sales_date
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        and year in (#{query.firstYear}, #{query.lastYear})
+        group by
+        project_id,
+        <if test='null != query.product and !"".equals(query.product)'>
+            product,
+        </if>
+        year, end_period
+    </select>
+
+    <insert id="transformImport">
+        insert into sales_date (project_id, product, `year`, `year_month`, end_period, channel, units, `value`, price,
+                                type, create_time)
+        select project_id,
+               product,
+               `year`,
+               `year_month`,
+               end_period,
+               channel,
+               units,
+               `value`,
+               price,
+               type,
+               create_time
+        from import_sales_date
+        where task_id = #{taskId}
+    </insert>
+
+    <update id="truncateSalesDate">
+        truncate table sales_date;
+    </update>
+
+    <select id="filter" resultType="String">
+        select distinct product
+        from sales_date
+        where project_id = #{query.projectId}
+    </select>
+
+
+</mapper>

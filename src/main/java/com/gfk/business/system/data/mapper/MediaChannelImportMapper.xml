@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.system.data.mapper.MediaChannelImportMapper">
+    <update id="truncateImport">
+        truncate table import_media_channel
+    </update>
+
+    <insert id="saveBatch">
+        <if test='null != list and list.size > 0'>
+            insert into import_media_channel (task_id, project_id, seq, create_time,
+            model_name, platform, product, l_group, var_label, name, pie_overall, pie_first_year, pie_last_year,
+            spend_overall, spend_first_year, spend_last_year, value_usd_overall, value_usd_first_year,
+            value_usd_last_year,
+            driven_overall, driven_first_year, driven_last_year, roi_overall, roi_first_year, roi_last_year, line)
+            values
+            <foreach collection="list" item="i" separator=",">
+                (#{i.taskId}, #{i.projectId}, #{i.seq}, #{i.createTime},
+                #{i.modelName}, #{i.platform}, #{i.product}, #{i.lGroup}, #{i.varLabel}, #{i.name}, #{i.pieOverall},
+                #{i.pieFirstYear}, #{i.pieLastYear},
+                #{i.spendOverall}, #{i.spendFirstYear}, #{i.spendLastYear}, #{i.valueUsdOverall},
+                #{i.valueUsdFirstYear}, #{i.valueUsdLastYear},
+                #{i.drivenOverall}, #{i.drivenUsdFirstYear}, #{i.drivenUsdLastYear}, #{i.roiOverall}, #{i.roiFirstYear},
+                #{i.roiLastYear}, #{i.line})
+            </foreach>
+        </if>
+    </insert>
+</mapper>

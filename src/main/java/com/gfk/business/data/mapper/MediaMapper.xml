@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.data.mapper.MediaMapper">
+
+    <select id="selectCurrentYear" resultType="String">
+        select max(year)
+        from media
+    </select>
+
+    <select id="selectSpendingChartData" resultType="com.gfk.business.data.model.bo.SpendingChartBO">
+        select platform, year, sum(ifnull(`value`, 0)) as value
+        from media
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        and year in (#{query.firstYear}, #{query.lastYear})
+        and var_metrics = 'net'
+        group by
+        project_id,
+        <if test='null != query.product and !"".equals(query.product)'>
+            product,
+        </if>
+        platform, year
+    </select>
+
+    <select id="selectPerformanceAnnuallyData" resultType="com.gfk.business.data.model.bo.PerformanceAnnuallyChartBO">
+        select
+        l_group as name,
+        year,
+        sum(ifnull(`value`, 0)) as value
+        from media
+        where project_id = #{query.projectId}
+        <if test='null != query.product and !"".equals(query.product)'>
+            and product = #{query.product}
+        </if>
+        and year in (#{query.firstYear}
+        , #{query.lastYear})
+        and var_metrics = 'net'
+        group by project_id, l_group, year
+    </select>
+
+    <select id="selectProductGroupImp" resultType="com.gfk.business.data.model.bo.TwoYearsValue">
+        select ifnull(max(t.valueFirst), 0) as firstYear,
+               ifnull(max(t.valueLast), 0)  as lastYear
+        from (select sum(ifnull(IF(year = #{query.firstYear}, value, 0), 0)) as valueFirst,
+                     sum(ifnull(IF(year = #{query.lastYear}, value, 0), 0))  as valueLast
+              from media
+              where project_id = #{query.projectId}
+                and product = #{query.product}
+                and l_group = #{query.group}
+                and var_metrics = 'imp'
+                and year is not null
+              group by year) as t
+    </select>
+
+    <select id="selectImpression" resultType="com.gfk.business.data.model.bo.ImpressionBO">
+        select end_period as date,
+               value
+        from media
+        where project_id = #{projectId}
+          and name = #{name}
+        order by end_period
+    </select>
+
+    <insert id="transformImport">
+        insert into media (project_id, product, platform, l_group, var_metrics, name, `year`, `year_month`, end_period,
+                           `value`, create_time)
+        select project_id,
+               product,
+               platform,
+               l_group,
+               var_metrics,
+               name,
+               `year`,
+               `year_month`,
+               end_period,
+               `value`,
+               create_time
+        from import_media
+        where task_id = #{taskId}
+    </insert>
+
+    <update id="truncateMedia">
+        truncate table media;
+    </update>
+
+</mapper>

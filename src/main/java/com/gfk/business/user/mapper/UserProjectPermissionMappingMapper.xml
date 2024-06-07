@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gfk.business.user.mapper.UserProjectPermissionMappingMapper">
+
+    <insert id="batchInsert">
+        insert into user_project_permission_mapping
+        (create_by,update_by,is_deleted,create_time,update_time,user_id,project_id,permission)
+        values
+        <foreach collection="saveList" item="i" separator=",">
+            (#{i.createBy},#{i.updateBy},#{i.isDeleted},#{i.createTime},#{i.updateTime},#{i.userId},#{i.projectId},#{i.permission})
+        </foreach>
+    </insert>
+
+</mapper>
