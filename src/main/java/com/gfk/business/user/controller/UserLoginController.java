@@ -26,7 +26,7 @@ import javax.validation.Valid;
  **/
 @Api(tags = "999 - 用户登录管理")
 @RestController
-@RequestMapping("/api/user_login")
+@RequestMapping("/user_login")
 @RequiredArgsConstructor
 @Slf4j
 public class UserLoginController {

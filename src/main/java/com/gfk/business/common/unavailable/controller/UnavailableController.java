@@ -20,7 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
  **/
 @RestController
 @ApiIgnore
-@RequestMapping("/api/unavailable")
+@RequestMapping("/unavailable")
 @Api(tags = "系统停机时间查询")
 public class UnavailableController {
     /**

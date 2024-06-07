@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "筛选条件查询")
 @RestController
-@RequestMapping("/api/filter")
+@RequestMapping("/filter")
 @RequiredArgsConstructor
 public class DataFilterController {
 

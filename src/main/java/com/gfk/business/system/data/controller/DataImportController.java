@@ -37,7 +37,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @Api(tags = "2 - 数据导入")
 @RestController
-@RequestMapping("/api/sys/data")
+@RequestMapping("/sys/data")
 @RequiredArgsConstructor
 @Slf4j
 public class DataImportController {

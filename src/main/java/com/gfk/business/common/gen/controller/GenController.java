@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @Slf4j
 @Api(tags = "[a]代码生成")
 @RestController
-@RequestMapping("/api/gen")
+@RequestMapping("/gen")
 @RequiredArgsConstructor
 public class GenController{
 

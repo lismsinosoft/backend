@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "业务数据查询V2")
 @RestController
-@RequestMapping("/api/business_data/v2")
+@RequestMapping("/business_data/v2")
 @RequiredArgsConstructor
 public class BusinessDataNewController {
 

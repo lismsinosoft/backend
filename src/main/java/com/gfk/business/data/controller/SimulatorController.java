@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "Simulator")
 @RestController
-@RequestMapping("/api/simulator")
+@RequestMapping("/simulator")
 @RequiredArgsConstructor
 public class SimulatorController {
 

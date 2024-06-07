@@ -28,7 +28,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "业务数据查询")
 @RestController
-@RequestMapping("/api/business_data")
+@RequestMapping("/business_data")
 @RequiredArgsConstructor
 public class BusinessDataController {
 

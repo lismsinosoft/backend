@@ -27,7 +27,6 @@ import java.util.List;
 @Api(tags = "用户关联项目查询")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 @Slf4j
 public class UserProjectController {
 

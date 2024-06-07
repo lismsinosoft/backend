@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "1 - 项目管理")
 @RestController
-@RequestMapping("/api/project")
+@RequestMapping("/project")
 @RequiredArgsConstructor
 public class ProjectController {
 
