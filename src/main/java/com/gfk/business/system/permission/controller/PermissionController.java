@@ -28,7 +28,7 @@ import javax.validation.Valid;
 @Api(tags = "权限数据管理")
 @ApiIgnore
 @RestController
-@RequestMapping("/permission")
+@RequestMapping("/api/permission")
 @RequiredArgsConstructor
 public class PermissionController {
 

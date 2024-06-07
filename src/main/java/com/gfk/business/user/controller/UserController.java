@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Api(tags = "3 - 用户管理")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {

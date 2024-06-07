@@ -3,7 +3,7 @@ server:
   port: 11016
   # 统一访问前缀
   servlet:
-    context-path: /api
+    context-path: /
   # 开启优雅停机，默认是立即停机IMMEDIATE https://www.jianshu.com/p/199e419c025e
   shutdown: graceful
 app:

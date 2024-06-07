@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @Api(tags = "[a]文件处理")
 @Controller
-@RequestMapping("/common")
+@RequestMapping("/api/common")
 @RequiredArgsConstructor
 public class FileInfoController {
 
